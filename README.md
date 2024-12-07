@@ -31,7 +31,7 @@ cargo run -- --server 203.0.113.99 --client client1
 Create self-signed certificates for server 203.0.113.99 and client2, and save keys and certificates in the `certs` folder:
 
 ```bash
-cargo run -- --server 203.0.113.99 --client client2 --output_dir './certs'
+cargo run -- --server 203.0.113.99 --client client2 --output-dir './certs'
 ```
 
 ## Ho to build
