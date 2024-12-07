@@ -4,7 +4,7 @@ cargo run -- --help
 ```
 Generate self-signed certificates for mutual TLS authentication
 
-Usage: mTLS [OPTIONS] --server <string> --client <string>
+Usage: mtls [OPTIONS] --server <string> --client <string>
 
 Options:
       --server <string>   Set the server host name.
