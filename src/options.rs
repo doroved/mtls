@@ -22,7 +22,7 @@ pub struct Opt {
         help = "Directory path for storing keys and certificates. Default is current directory.",
         default_value = "."
     )]
-    pub ca_path: String,
+    pub output_dir: String,
 
     #[clap(
         long,

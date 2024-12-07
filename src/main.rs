@@ -18,7 +18,12 @@ fn main() {
 
     // 1. Generate root certificate
     let root_cert = make_root_cert();
-    let _ = save_cert_and_key(&root_cert, "rootCA.pem", "rootCA-key.pem", &options.ca_path);
+    let _ = save_cert_and_key(
+        &root_cert,
+        "rootCA.pem",
+        "rootCA-key.pem",
+        &options.output_dir,
+    );
 
     // 2. Generate server certificate
     let server_host = options.server.to_lowercase();
@@ -29,14 +34,14 @@ fn main() {
             &server_cert,
             "server.pem",
             "server-key.pem",
-            &options.ca_path,
+            &options.output_dir,
         );
     } else {
         let _ = save_cert_and_key(
             &server_cert,
             format!("{}.pem", server_host).as_str(),
             format!("{}-key.pem", server_host).as_str(),
-            &options.ca_path,
+            &options.output_dir,
         );
     }
 
@@ -49,19 +54,19 @@ fn main() {
             &client_cert,
             "client.pem",
             "client-key.pem",
-            &options.ca_path,
+            &options.output_dir,
         );
     } else {
         let _ = save_cert_and_key(
             &client_cert,
             format!("{}-client.pem", client_host).as_str(),
             format!("{}-client-key.pem", client_host).as_str(),
-            &options.ca_path,
+            &options.output_dir,
         );
     }
 
     println!(
         "Certificates and keys have been generated and saved in directory: {}/",
-        options.ca_path
+        options.output_dir
     );
 }
