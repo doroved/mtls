@@ -18,14 +18,6 @@ pub struct Opt {
 
     #[clap(
         long,
-        value_name = "PATH",
-        help = "Directory path for storing keys and certificates. Default is current directory.",
-        default_value = "."
-    )]
-    pub output_dir: String,
-
-    #[clap(
-        long,
         value_name = "u64",
         help = "Specify the CA certificate validity in days. Default: max. period."
     )]
@@ -37,6 +29,14 @@ pub struct Opt {
         help = "Specify the certificate validity in days. Default: max. period."
     )]
     pub crt_days: Option<u64>,
+
+    #[clap(
+        long,
+        value_name = "PATH",
+        help = "Directory path for storing keys and certificates. Default is current directory.",
+        default_value = "."
+    )]
+    pub output_dir: String,
 
     #[clap(
         long,
