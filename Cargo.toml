@@ -9,3 +9,10 @@ edition = "2021"
 chrono = "0.4.38"
 rcgen = { version = "0.13.1", features = ["aws_lc_rs"] }
 clap = { version = "4.5.23", features = ["derive"] }
+
+[profile.release]
+panic = "abort"   # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true        # Enables link to optimizations
+opt-level = "z"   # Optimize for binary size s = 1.7 mb | z = 1.6 mb
+strip = true      # Remove debug symbols
