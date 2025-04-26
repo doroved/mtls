@@ -7,6 +7,24 @@ use std::time::SystemTime;
 
 use crate::options::Opt;
 
+// Function for creating a key pair based on options
+fn create_key_pair(ecdsa: bool) -> KeyPair {
+    if ecdsa {
+        KeyPair::generate().unwrap()
+    } else {
+        KeyPair::generate_for(&rcgen::PKCS_RSA_SHA256).unwrap()
+    }
+}
+
+// Function for setting the validity period of a certificate
+fn set_certificate_validity(params: &mut CertificateParams, days: Option<u64>) {
+    if let Some(days) = days {
+        let now = SystemTime::now();
+        params.not_before = now.into();
+        params.not_after = (now + std::time::Duration::from_secs(days * 24 * 60 * 60)).into();
+    }
+}
+
 // Generate a root CA certificate
 pub fn make_root_cert() -> rcgen::CertifiedKey {
     let options = Opt::parse();
@@ -19,12 +37,7 @@ pub fn make_root_cert() -> rcgen::CertifiedKey {
     };
 
     let mut param = CertificateParams::default();
-
-    if let Some(ca_days) = options.ca_days {
-        let now = SystemTime::now();
-        param.not_before = now.into();
-        param.not_after = (now + std::time::Duration::from_secs(ca_days * 24 * 60 * 60)).into();
-    }
+    set_certificate_validity(&mut param, options.ca_days);
 
     param.distinguished_name = DistinguishedName::new();
     param
@@ -33,11 +46,7 @@ pub fn make_root_cert() -> rcgen::CertifiedKey {
     param.key_usages = vec![KeyUsagePurpose::KeyCertSign, KeyUsagePurpose::CrlSign];
     param.is_ca = IsCa::Ca(rcgen::BasicConstraints::Unconstrained);
 
-    let key_pair = if options.ecdsa {
-        KeyPair::generate().unwrap()
-    } else {
-        KeyPair::generate_for(&rcgen::PKCS_RSA_SHA256).unwrap()
-    };
+    let key_pair = create_key_pair(options.ecdsa);
     let cert = param.self_signed(&key_pair).unwrap();
 
     rcgen::CertifiedKey { cert, key_pair }
@@ -48,12 +57,7 @@ pub fn generate_cert(host: String, root_cert: &rcgen::CertifiedKey) -> rcgen::Ce
     let options = Opt::parse();
 
     let mut param = CertificateParams::new(vec![host.clone()]).unwrap();
-
-    if let Some(crt_days) = options.crt_days {
-        let now = SystemTime::now();
-        param.not_before = now.into();
-        param.not_after = (now + std::time::Duration::from_secs(crt_days * 24 * 60 * 60)).into();
-    }
+    set_certificate_validity(&mut param, options.crt_days);
 
     param.key_usages.push(KeyUsagePurpose::DigitalSignature);
     param
@@ -68,11 +72,7 @@ pub fn generate_cert(host: String, root_cert: &rcgen::CertifiedKey) -> rcgen::Ce
         dn
     };
 
-    let key_pair = if options.ecdsa {
-        KeyPair::generate().unwrap()
-    } else {
-        KeyPair::generate_for(&rcgen::PKCS_RSA_SHA256).unwrap()
-    };
+    let key_pair = create_key_pair(options.ecdsa);
     let cert = param
         .signed_by(&key_pair, &root_cert.cert, &root_cert.key_pair)
         .unwrap();

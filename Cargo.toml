@@ -1,17 +1,17 @@
 [package]
 name = "mtls"
 description = "Generate self-signed certificates for mutual TLS authentication"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["doroved"]
 readme = "README.md"
 repository = "https://github.com/doroved/mtls"
 license = "MIT OR Apache-2.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-chrono = "0.4.38"
-rcgen = { version = "0.13.1", features = ["aws_lc_rs"] }
-clap = { version = "4.5.23", features = ["derive"] }
+chrono = "0.4.40"
+rcgen = { version = "0.13.2", features = ["aws_lc_rs"] }
+clap = { version = "4.5.37", features = ["derive"] }
 
 [profile.release]
 panic = "abort"   # Strip expensive panic clean-up logic
